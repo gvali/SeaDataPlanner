@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Data.Entity.Migrations;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,10 @@ namespace DAL
         public DataBaseContext() : base("name=DataBaseConnectionStr")
         {
             Database.SetInitializer(new MigrateDatabaseToLatestVersion<DataBaseContext,DBMigrationConfiguration>());
+#if DEBUG
+            // Database.Log = Console.WriteLine;
+            Database.Log = s => Trace.Write(s);
+#endif
         }
         public DbSet<Cruise> Cruises { get; set; }
 
