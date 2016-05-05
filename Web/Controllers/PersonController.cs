@@ -7,18 +7,22 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DAL;
+using DAL.Interface;
+using DAL.Repository;
 using Domain;
 
 namespace Web.Controllers
 {
     public class PersonController : Controller
     {
-        private DataBaseContext db = new DataBaseContext();
-
+        //private DataBaseContext db = new DataBaseContext();
+        private IPersonRepository _personRepository = new PersonRepository(new DataBaseContext());
+        
         // GET: Person
         public ActionResult Index()
         {
-            return View(db.Persons.ToList());
+//            return View(db.Persons.ToList());
+            return View(_personRepository.All);
         }
 
         // GET: Person/Details/5
@@ -28,7 +32,8 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Person person = db.Persons.Find(id);
+            //Person person = db.Persons.Find(id);
+            Person person = _personRepository.GetById();
             if (person == null)
             {
                 return HttpNotFound();
@@ -51,8 +56,10 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Persons.Add(person);
-                db.SaveChanges();
+                //db.Persons.Add(person);
+                _personRepository.Add(person);
+                //db.SaveChanges();
+                _personRepository.SaveChanges();
                 return RedirectToAction("Index");
             }
 
