@@ -7,18 +7,23 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using DAL;
+using DAL.Interface;
+using DAL.Repository;
 using Domain;
 
 namespace Web.Controllers
 {
     public class CruisesController : Controller
     {
-        private DataBaseContext db = new DataBaseContext();
+        //        private DataBaseContext db = new DataBaseContext();
+        private ICruiseRepository _cruisesRepository = new CruiseRepository(new DataBaseContext());
 
         // GET: Cruises
         public ActionResult Index()
         {
-            return View(db.Cruises.ToList());
+            //            return System.Web.UI.WebControls.View(db.Cruises.ToList());
+            return View(_cruisesRepository.All);
+
         }
 
         // GET: Cruises/Details/5
@@ -28,7 +33,8 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Cruise cruise = db.Cruises.Find(id);
+//            Cruise cruise = db.Cruises.Find(id);
+            Cruise cruise = _cruisesRepository.GetById(id);
             if (cruise == null)
             {
                 return HttpNotFound();
@@ -51,8 +57,10 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Cruises.Add(cruise);
-                db.SaveChanges();
+//                db.Cruises.Add(cruise);
+//                db.SaveChanges();
+                _cruisesRepository.Add(cruise);
+                _cruisesRepository.SaveChanges();
                 return RedirectToAction("Index");
             }
 
@@ -66,7 +74,9 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Cruise cruise = db.Cruises.Find(id);
+//            Cruise cruise = db.Cruises.Find(id);
+            Cruise cruise = _cruisesRepository.GetById(id);
+
             if (cruise == null)
             {
                 return HttpNotFound();
@@ -83,8 +93,9 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(cruise).State = EntityState.Modified;
-                db.SaveChanges();
+//                db.Entry(cruise).State = EntityState.Modified;
+//                db.SaveChanges();
+                _cruisesRepository.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(cruise);
@@ -97,7 +108,8 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Cruise cruise = db.Cruises.Find(id);
+//            Cruise cruise = db.Cruises.Find(id);
+            Cruise cruise = _cruisesRepository.GetById(id);
             if (cruise == null)
             {
                 return HttpNotFound();
@@ -110,9 +122,12 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Cruise cruise = db.Cruises.Find(id);
-            db.Cruises.Remove(cruise);
-            db.SaveChanges();
+//            Cruise cruise = db.Cruises.Find(id);
+            Cruise cruise = _cruisesRepository.GetById(id);
+//            db.Cruises.Remove(cruise);
+//            db.SaveChanges();
+            _cruisesRepository.Delete(cruise);
+            _cruisesRepository.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -120,7 +135,8 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+//                db.Dispose();
+                _cruisesRepository.Dispose();
             }
             base.Dispose(disposing);
         }

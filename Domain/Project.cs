@@ -14,9 +14,8 @@ namespace Domain
         public string ProjectName { get; set; }
 
         public int PersonId { get; set; }
-
         [Required]
-        public virtual Person Person { get; set; }
+        public virtual Person ProjectLeader { get; set; }
 
         public virtual List<Person> Persons { get; set; } = new List<Person>(); 
 

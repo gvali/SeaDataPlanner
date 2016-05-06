@@ -16,7 +16,7 @@ namespace Domain
 
         [Required]
         public int PersonId { get; set; }
-        public virtual Person Person { get; set; }
+        public virtual Person CruiseLeader { get; set; }
 
         public virtual List<Person> Persons { get; set; } = new List<Person>();
 

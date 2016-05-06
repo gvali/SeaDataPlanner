@@ -16,6 +16,7 @@ namespace Web.Controllers
     public class PersonController : Controller
     {
         //private DataBaseContext db = new DataBaseContext();
+
         private IPersonRepository _personRepository = new PersonRepository(new DataBaseContext());
         
         // GET: Person
@@ -73,7 +74,8 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Person person = db.Persons.Find(id);
+//            Person person = db.Persons.Find(id);
+            Person person = _personRepository.GetById(id);
             if (person == null)
             {
                 return HttpNotFound();
@@ -90,8 +92,10 @@ namespace Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(person).State = EntityState.Modified;
-                db.SaveChanges();
+                //                db.Entry(person).State = EntityState.Modified;
+
+                _personRepository.SaveChanges();
+                //db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(person);
@@ -104,7 +108,8 @@ namespace Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Person person = db.Persons.Find(id);
+//            Person person = db.Persons.Find(id);
+            Person person = _personRepository.GetById(id);
             if (person == null)
             {
                 return HttpNotFound();
@@ -117,9 +122,12 @@ namespace Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Person person = db.Persons.Find(id);
-            db.Persons.Remove(person);
-            db.SaveChanges();
+            //            Person person = db.Persons.Find(id);
+            Person person = _personRepository.GetById(id);
+            _personRepository.Delete(person);
+            _personRepository.SaveChanges();
+ //           db.Persons.Remove(person);
+ //          db.SaveChanges();
             return RedirectToAction("Index");
         }
 
@@ -127,7 +135,8 @@ namespace Web.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+//                db.Dispose();
+                _personRepository.Dispose();
             }
             base.Dispose(disposing);
         }

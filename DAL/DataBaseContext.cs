@@ -10,16 +10,31 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DataAnnotations;
+using DAL.Helpers;
+using DAL.Interface;
 using DAL.Migrations;
 using Domain;
+using NLog;
 
 namespace DAL
 {
-    public class DataBaseContext:DbContext
+    public class DataBaseContext:DbContext,IDbContext
     {
+        private readonly NLog.ILogger _logger;
+        private readonly string _instanceId = Guid.NewGuid().ToString();
+        private readonly IUserNameResolver _userNameResolver;
+
+//        public DataBaseContext(IUserNameResolver userNameResolver, ILogger logger) : base("name=DataBaseConnectionStr")
         public DataBaseContext() : base("name=DataBaseConnectionStr")
+
         {
-            Database.SetInitializer(new MigrateDatabaseToLatestVersion<DataBaseContext,DBMigrationConfiguration>());
+            //            _logger = logger;
+            //            _userNameResolver = userNameResolver;
+
+            //            _logger.Debug("InstanceId: " + _instanceId);
+
+            //            Database.SetInitializer(new MigrateDatabaseToLatestVersion<DataBaseContext,DBMigrationConfiguration>());
+            Database.SetInitializer(new DatabaseInitializer());
 #if DEBUG
             // Database.Log = Console.WriteLine;
             Database.Log = s => Trace.Write(s);
@@ -83,11 +98,11 @@ namespace DAL
                 if (entity.State == EntityState.Added)
                 {
                     ((IBaseEntity)entity.Entity).CreatedAtDT = DateTime.Now;
-                    ((IBaseEntity)entity.Entity).CreatedBy = _userNameResolver.CurrentUserName;
+//                    ((IBaseEntity)entity.Entity).CreatedBy = _userNameResolver.CurrentUserName;
                 }
 
                 ((IBaseEntity)entity.Entity).ModifiedAtDT = DateTime.Now;
-                ((IBaseEntity)entity.Entity).ModifiedBy = _userNameResolver.CurrentUserName;
+//                ((IBaseEntity)entity.Entity).ModifiedBy = _userNameResolver.CurrentUserName;
             }
 
             // Custom exception - gives much more details why EF Validation failed
@@ -105,7 +120,7 @@ namespace DAL
 
         protected override void Dispose(bool disposing)
         {
-            _logger.Info("Disposing: " + disposing + " _instanceId: " + _instanceId);
+//            _logger.Info("Disposing: " + disposing + " _instanceId: " + _instanceId);
             base.Dispose(disposing);
         }
 

@@ -54,9 +54,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataBaseContext.cs" />
+    <Compile Include="Helpers\FormattedDbEntityValidationException.cs" />
     <Compile Include="Interface\ICruiseRepository.cs" />
     <Compile Include="Interface\IDbContext.cs" />
     <Compile Include="Interface\IPersonRepository.cs" />
+    <Compile Include="Interface\IUserNameResolver.cs" />
     <Compile Include="Migrations\201605041544535_InitialCreate.cs" />
     <Compile Include="Migrations\201605041544535_InitialCreate.Designer.cs">
       <DependentUpon>201605041544535_InitialCreate.cs</DependentUpon>
